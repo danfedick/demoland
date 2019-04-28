@@ -6,7 +6,7 @@ First: Start Vault (in development mode) and  Mysql on your local environment.
 
 *(This demo is built specifically on a Mac OS operating system but can be modified for Linux.)*
 ```
-$ cd demoland/srcripts
+$ cd demoland/mysql-dynamic-secrets/srcripts
 $ ./0_start_vault_server.sh
 
 ==> Vault server configuration:
