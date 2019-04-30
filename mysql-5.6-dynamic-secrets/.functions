@@ -1,0 +1,48 @@
+
+list_functions() {
+  echo "Available Functions in your Shell are: "
+  echo "#######################################"
+  echo "get_static_creds"
+  echo "get_dynamic_creds"
+  echo "connect_static"
+  echo "set_vault_token"
+}
+
+set_vault_token() {
+  export VAULT_TOKEN=$(cat ~/.vault-token)
+}
+
+get_static_creds() {
+  export MYSQL_ROOT_PASSWORD=$(vault kv get -field=MYSQL_ROOT_PASSWORD secret/mysqldb)
+  export MYSQL_DATABASE=$(vault kv get -field=MYSQL_DATABASE secret/mysqldb)
+  export MYSQL_USER=$(vault kv get -field=MYSQL_USER secret/mysqldb)
+  export MYSQL_PASSWORD=$(vault kv get -field=MYSQL_PASSWORD secret/mysqldb)
+  echo "Static Credentials for Mysql are are gotten and available for the following vars:"
+  echo "MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD"
+  echo "MYSQL_DATABASE: $MYSQL_DATABASE"
+  echo "MYSQL_USER: $MYSQL_USER"
+  echo "MYSQL_PASSWORD: $MYSQL_PASSWORD"
+}
+
+connect_static() {
+  export MYSQL_ROOT_PASSWORD=$(vault kv get -field=MYSQL_ROOT_PASSWORD secret/mysqldb)
+  export MYSQL_DATABASE=$(vault kv get -field=MYSQL_DATABASE secret/mysqldb)
+  export MYSQL_USER=$(vault kv get -field=MYSQL_USER secret/mysqldb)
+  export MYSQL_PASSWORD=$(vault kv get -field=MYSQL_PASSWORD secret/mysqldb)
+
+  echo ""
+  echo "mysql -u root -h 127.0.0.1 -p'Using the mysql static passwd retrieved from vault'"
+  echo ""
+  mysql -u root -h 127.0.0.1 -p${MYSQL_ROOT_PASSWORD}
+}
+
+
+get_dynamic_creds() {
+  export VAULT_TOKEN=$(cat ~/.vault-token)
+  export MYSQL_ROLE=mysql_admin_role
+  
+  echo ""
+  echo "vault read mysql/creds/${MYSQL_ROLE}"
+  echo ""
+  vault read mysql/creds/${MYSQL_ROLE}
+}
